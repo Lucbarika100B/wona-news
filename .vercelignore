@@ -1,0 +1,11 @@
+# These folders are for local dev and the GitHub Action.
+# They should NOT be deployed as part of the static site.
+backend/
+pipeline/
+archives/
+docs/
+__pycache__/
+*.pyc
+.github/
+requirements.txt
+requirements-ml.txt

@@ -5,6 +5,14 @@ on:
     # 06:00 UTC daily
     - cron: "0 6 * * *"
   workflow_dispatch:
+    inputs:
+      mode:
+        description: "Classification mode"
+        type: choice
+        default: "keyword"
+        options:
+          - keyword
+          - full_ml
 
 permissions:
   contents: write
@@ -16,10 +24,14 @@ concurrency:
 jobs:
   ingest:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    # Generous timeout in case full_ml mode is selected manually.
+    # Keyword mode (default) typically finishes in 5-8 minutes.
+    timeout-minutes: 60
     env:
       HF_HOME: ${{ github.workspace }}/.cache/huggingface
       TRANSFORMERS_VERBOSITY: error
+      # Scheduled runs default to keyword. Manual runs respect the input.
+      WONA_MODE: ${{ github.event.inputs.mode || 'keyword' }}
 
     steps:
       - name: Checkout
@@ -36,23 +48,31 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Install ML dependencies (CPU torch)
+      - name: Install ML dependencies (CPU torch) — only in full_ml mode
+        if: env.WONA_MODE == 'full_ml'
         run: |
           pip install --index-url https://download.pytorch.org/whl/cpu torch
           pip install transformers sentencepiece
 
-      - name: Cache HuggingFace models
+      - name: Cache HuggingFace models — only in full_ml mode
+        if: env.WONA_MODE == 'full_ml'
         uses: actions/cache@v4
         with:
           path: ${{ env.HF_HOME }}
           key: hf-models-mdeberta-v3-base-v1
           restore-keys: hf-models-
 
-      - name: Run pipeline
+      - name: Run pipeline (keyword mode)
+        if: env.WONA_MODE == 'keyword'
         env:
           PYTHONUNBUFFERED: "1"
-        run: |
-          python -m pipeline.run --verbose || python -m pipeline.run --no-bodies --keyword-only --verbose
+        run: python -m pipeline.run --keyword-only --verbose
+
+      - name: Run pipeline (full ML mode)
+        if: env.WONA_MODE == 'full_ml'
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: python -m pipeline.run --verbose
 
       - name: Sync data into frontend
         run: bash scripts/sync_data.sh
@@ -66,5 +86,5 @@ jobs:
             echo "No changes to commit."
             exit 0
           fi
-          git commit -m "data: daily ingestion $(date -u +'%Y-%m-%d')"
+          git commit -m "data: daily ingestion $(date -u +'%Y-%m-%d') (mode=$WONA_MODE)"
           git push

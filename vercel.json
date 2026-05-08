@@ -1,6 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
+  "framework": null,
   "buildCommand": "bash scripts/sync_data.sh",
   "outputDirectory": "frontend",
   "cleanUrls": true,
