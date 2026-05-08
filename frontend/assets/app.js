@@ -465,7 +465,7 @@
   }
 
   // ----------------------------------------------------------------------------
-  // Rendering: orientation legend (clickable filters)
+  // Rendering: orientation legend (clickable filters with descriptions)
   // ----------------------------------------------------------------------------
   function renderOrientationLegend() {
     return STATE.orientations
@@ -474,7 +474,10 @@
         <li>
           <button type="button" class="legend-item" data-orientation="${escapeHTML(o.id)}">
             <span class="orientation-swatch" style="background:${o.color}"></span>
-            <span>${escapeHTML(orientationName(o))}</span>
+            <span class="legend-text">
+              <span class="legend-name">${escapeHTML(orientationName(o))}</span>
+              <span class="legend-desc">${escapeHTML(orientationDesc(o) || "")}</span>
+            </span>
           </button>
         </li>
       `).join("");
