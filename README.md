@@ -241,4 +241,4 @@ Proprietary, all rights reserved. Contact the maintainer before reuse.
 
 ## Contact
 
-Luc Anthony Nkounkou — `lucanthony07@gmail.com`
+Wona news — `wonanews@proton.me`
