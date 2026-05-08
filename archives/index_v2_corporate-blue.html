@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wona News - African Perspectives in Every Story</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary: #6B7280;  /* Soft gray */
+            --secondary: #1F2937;  /* Dark gray */
+            --accent: #3B82F6;  /* Blue for trust */
+            --dark: #111827;  /* Very dark gray */
+            --light: #F9FAFB;  /* Very light gray */
+            --text: #374151;  /* Soft black */
+            --background: #FFFFFF;  /* Pure white */
+        }
+        
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+        }
+        
+        .news-card {
+            transition: all 0.3s ease;
+            aspect-ratio: 1/1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .news-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .card-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card-image {
+            height: 180px;
+            width: 100%;
+            object-fit: cover;
+        }
+        
+        .political-index {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-top: 12px;
+        }
+        
+        .index-item {
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+        }
+        
+        .index-label {
+            width: 80px;
+            font-weight: 500;
+            color: var(--text);
+        }
+        
+        .index-bar {
+            flex-grow: 1;
+            height: 6px;
+            background-color: #E5E7EB;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .index-fill {
+            height: 100%;
+            border-radius: 3px;
+        }
+        
+        .index-value {
+            width: 30px;
+            text-align: right;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+        
+        /* Strong colors for percentages only */
+        .panafricaniste { background-color: #10B981; } /* Green */
+        .nationaliste { background-color: #8B5CF6; } /* Purple */
+        .post-colonial { background-color: #3B82F6; } /* Blue */
+        .pro-colonial { background-color: #EF4444; } /* Red */
+        .diaspora-centered { background-color: #06B6D4; } /* Cyan */
+        .afrofuturiste { background-color: #F59E0B; } /* Amber */
+        .traditionaliste { background-color: #78716C; } /* Stone */
+        .decolonial-culturel { background-color: #64748B; } /* Slate */
+        
+        .theme-tag {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            background-color: #E5E7EB;
+            color: var(--secondary);
+        }
+        
+        .nav-link {
+            color: var(--text);
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--secondary);
+        }
+        
+        .nav-link:hover::after {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 2px;
+            background-color: var(--secondary);
+            margin-top: 2px;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fadeIn {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        
+        .political-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: white;
+        }
+        
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .search-container {
+            width: 240px;
+            transition: width 0.3s ease;
+        }
+        
+        .search-container:focus-within {
+            width: 280px;
+        }
+        
+        .source-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            background-color: #F3F4F6;
+            color: var(--text);
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .source-badge img {
+            width: 16px;
+            height: 16px;
+            margin-right: 0.25rem;
+            border-radius: 50%;
+        }
+        
+        .donate-btn {
+            background-color: var(--accent);
+            color: white;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        
+        .donate-btn:hover {
+            background-color: #2563EB;
+            transform: translateY(-1px);
+        }
+        
+        /* Header styling */
+        .header {
+            background-color: var(--background);
+            border-bottom: 1px solid #E5E7EB;
+        }
+        
+        /* Footer styling */
+        .footer {
+            background-color: var(--secondary);
+            color: #F3F4F6;
+        }
+        
+        .footer a {
+            color: #D1D5DB;
+            transition: color 0.2s ease;
+        }
+        
+        .footer a:hover {
+            color: white;
+        }
+        
+        /* Newsletter section */
+        .newsletter {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        /* Modal styling */
+        .modal {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-content {
+            background-color: var(--background);
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Button styling */
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2563EB;
+        }
+        
+        .btn-secondary {
+            background-color: var(--background);
+            border: 1px solid #D1D5DB;
+            color: var(--text);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #F3F4F6;
+        }
+        
+        /* Text colors */
+        .text-primary {
+            color: var(--text);
+        }
+        
+        .text-secondary {
+            color: var(--secondary);
+        }
+        
+        /* Background colors */
+        .bg-primary {
+            background-color: var(--background);
+        }
+        
+        .bg-secondary {
+            background-color: var(--light);
+        }
+        
+        /* Trending tags */
+        .trending-tag {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            background-color: #F3F4F6;
+            color: var(--text);
+            transition: all 0.2s ease;
+        }
+        
+        .trending-tag:hover {
+            background-color: #E5E7EB;
+        }
+        
+        /* Card title */
+        .card-title {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header/Navigation -->
+    <header class="header sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center text-white font-bold text-xl">W</div>
+                <span class="text-xl font-bold text-gray-800">Wona News</span>
+            </div>
+            
+            <nav class="hidden md:flex space-x-8">
+                <a href="#" class="nav-link font-medium transition">Home</a>
+                <a href="#" class="nav-link font-medium transition">Topics</a>
+                <a href="#" class="nav-link font-medium transition">Perspectives</a>
+                <a href="#" class="nav-link font-medium transition">Analysis</a>
+                <a href="#" class="nav-link font-medium transition">About</a>
+            </nav>
+            
+            <div class="flex items-center space-x-4">
+                <div class="search-container relative hidden md:block">
+                    <input type="text" placeholder="Search news..." class="search-input w-full px-4 py-2 rounded-full border border-gray-300 text-gray-700 focus:ring-2 focus:ring-blue-500">
+                    <button class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <button class="donate-btn hidden md:flex items-center">
+                    <i class="fas fa-heart mr-2"></i> Support Us
+                </button>
+                <button class="hidden md:block bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 transition">Subscribe</button>
+                <button class="hidden md:block border border-gray-300 px-4 py-2 rounded-md font-medium hover:bg-gray-100 transition">Sign In</button>
+                <button class="md:hidden text-gray-700">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-6">
+        <!-- Trending Topics -->
+        <div class="mb-8">
+            <h2 class="text-lg font-semibold text-gray-700 mb-3">Trending in Africa</h2>
+            <div class="flex flex-wrap gap-2">
+                <a href="#" class="trending-tag">AfCFTA</a>
+                <a href="#" class="trending-tag">Sahel Crisis</a>
+                <a href="#" class="trending-tag">Diaspora Investment</a>
+                <a href="#" class="trending-tag">Climate Resilience</a>
+                <a href="#" class="trending-tag">Tech Startups</a>
+                <a href="#" class="trending-tag">African Union</a>
+            </div>
+        </div>
+        
+        <!-- News Grid -->
+        <div class="news-grid">
+            <!-- Story 1 -->
+            <div class="news-card bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
+                <div class="card-content">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1548092372-44d6dd3745f7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Climate change" class="card-image">
+                        <div class="absolute bottom-2 left-2">
+                            <span class="theme-tag">Climate</span>
+                        </div>
+                    </div>
+                    <div class="p-4 flex-1 flex flex-col">
+                        <div class="flex flex-wrap mb-2">
+                            <span class="source-badge">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/BBC_News_2019.svg/1200px-BBC_News_2019.svg.png" alt="BBC Africa">
+                                BBC Africa
+                            </span>
+                            <span class="source-badge">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/France_24_logo.svg/1200px-France_24_logo.svg.png" alt="France 24">
+                                France 24
+                            </span>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2 text-gray-800 card-title">Sahel Nations Unite for Climate Resilience Initiative Against Desertification</h3>
+                        
+                        <div class="political-index mt-auto">
+                            <div class="index-item">
+                                <span class="index-label">Panafricaniste</span>
+                                <div class="index-bar">
+                                    <div class="index-fill panafricaniste" style="width: 70%"></div>
+                                </div>
+                                <span class="index-value">70%</span>
+                            </div>
+                            <div class="index-item">
+                                <span class="index-label">Nationaliste</span>
+                                <div class="index-bar">
+                                    <div class="index-fill nationaliste" style="width: 65%"></div>
+                                </div>
+                                <span class="index-value">65%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center text-sm text-gray-500 mt-4">
+                            <span>2 sources</span>
+                            <span>5h ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Story 2 -->
+            <div class="news-card bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
+                <div class="card-content">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1630&q=80" alt="Diaspora" class="card-image">
+                        <div class="absolute bottom-2 left-2">
+                            <span class="theme-tag">Diaspora</span>
+                        </div>
+                    </div>
+                    <div class="p-4 flex-1 flex flex-col">
+                        <div class="flex flex-wrap mb-2">
+                            <span class="source-badge">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/RFI.svg/1200px-RFI.svg.png" alt="RFI">
+                                RFI
+                            </span>
+                            <span class="source-badge">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/France_24_logo.svg/1200px-France_24_logo.svg.png" alt="France 24">
+                                France 24
+                            </span>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2 text-gray-800 card-title">African Diaspora Investments Reach Record High in 2023 Across Key Sectors</h3>
+                        
+                        <div class="political-index mt-auto">
+                            <div class="index-item">
+                                <span class="index-label">Diaspora</span>
+                                <div class="index-bar">
+                                    <div class="index-fill diaspora-centered" style="width: 90%"></div>
+                                </div>
+                                <span class="index-value">90%</span>
+                            </div>
+                            <div class="index-item">
+                                <span class="index-label">Panafricaniste</span>
+                                <div class="index-bar">
+                                    <div class="index-fill panafricaniste" style="width: 75%"></div>
+                                </div>
+                                <span class="index-value">75%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center text-sm text-gray-500 mt-4">
+                            <span>2 sources</span>
+                            <span>1d ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Story 3 -->
+            <div class="news-card bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
+                <div class="card-content">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Education" class="card-image">
+                        <div class="absolute bottom-2 left-2">
+                            <span class="theme-tag">Education</span>
+                        </div>
+                    </div>
+                    <div class="p-4 flex-1 flex flex-col">
+                        <div class="flex flex-wrap mb-2">
+                            <span class="source-badge">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/BBC_News_2019.svg/1200px-BBC_News_2019.svg.png" alt="BBC Africa">
+                                BBC Africa
+                            </span>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2 text-gray-800 card-title">New Pan-African University Network Launches With Focus on Continental Challenges</h3>
+                        
+                        <div class="political-index mt-auto">
+                            <div class="index-item">
+                                <span class="index-label">Panafricaniste</span>
+                                <div class="index-bar">
+                                    <div class="index-fill panafricaniste" style="width: 80%"></div>
+                                </div>
+                                <span class="index-value">80%</span>
+                            </div>
+                            <div class="index-item">
+                                <span class="index-label">Afrofuturiste</span>
+                                <div class="index-bar">
+                                    <div class="index-fill afrofuturiste" style="width: 65%"></div>
+                                </div>
+                                <span class="index-value">65%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center text-sm text-gray-500 mt-4">
+                            <span>1 source</span>
+                            <span>3h ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Story 4 -->
+            <div class="news-card bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
+                <div class="card-content">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1454165804606-c3aa57c1cbbc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1473&q=80" alt="Technology" class="card-image">
+                        <div class="absolute bottom-2 left-2">
+                            <span class="theme-tag">Technology</span>
+                        </div>
+                    </div>
+                    <div class="p-4 flex-1 flex flex-col">
+                        <div class="flex flex-wrap mb-2">
+                            <span class="source-badge">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/RFI.svg/1200px-RFI.svg.png" alt="RFI">
+                                RFI
+                            </span>
+                            <span class="source-badge">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/BBC_News_2019.svg/1200px-BBC_News_2019.svg.png" alt="BBC Africa">
+                                BBC Africa
+                            </span>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2 text-gray-800 card-title">Nigerian Fintech Startup Raises $50M Series B for Cross-Border Payments</h3>
+                        
+                        <div class="political-index mt-auto">
+                            <div class="index-item">
+                                <span class="index-label">Afrofuturiste</span>
+                                <div class="index-bar">
+                                    <div class="index-fill afrofuturiste" style="width: 75%"></div>
+                                </div>
+                                <span class="index-value">75%</span>
+                            </div>
+                            <div class="index-item">
+                                <span class="index-label">Post-Colonial</span>
+                                <div class="index-bar">
+                                    <div class="index-fill post-colonial" style="width: 60%"></div>
+                                </div>
+                                <span class="index-value">60%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center text-sm text-gray-500 mt-4">
+                            <span>2 sources</span>
+                            <span>7h ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Story 5 -->
+            <div class="news-card bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
+                <div class="card-content">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1519817650390-64a93db51149?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Politics" class="card-image">
+                        <div class="absolute bottom-2 left-2">
+                            <span class="theme-tag">Politics</span>
+                        </div>
+                    </div>
+                    <div class="p-4 flex-1 flex flex-col">
+                        <div class="flex flex-wrap mb-2">
+                            <span class="source-badge">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/France_24_logo.svg/1200px-France_24_logo.svg.png" alt="France 24">
+                                France 24
+                            </span>
+                            <span class="source-badge">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/RFI.svg/1200px-RFI.svg.png" alt="RFI">
+                                RFI
+                            </span>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2 text-gray-800 card-title">ECOWAS Announces New $1B Security Framework for Regional Stability</h3>
+                        
+                        <div class="political-index mt-auto">
+                            <div class="index-item">
+                                <span class="index-label">Nationaliste</span>
+                                <div class="index-bar">
+                                    <div class="index-fill nationaliste" style="width: 70%"></div>
+                                </div>
+                                <span class="index-value">70%</span>
+                            </div>
+                            <div class="index-item">
+                                <span class="index-label">Panafricaniste</span>
+                                <div class="index-bar">
+                                    <div class="index-fill panafricaniste" style="width: 55%"></div>
+                                </div>
+                                <span class="index-value">55%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center text-sm text-gray-500 mt-4">
+                            <span>2 sources</span>
+                            <span>9h ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Story 6 -->
+            <div class="news-card bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
+                <div class="card-content">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80" alt="African economy" class="card-image">
+                        <div class="absolute bottom-2 left-2">
+                            <span class="theme-tag">Economy</span>
+                        </div>
+                    </div>
+                    <div class="p-4 flex-1 flex flex-col">
+                        <div class="flex flex-wrap mb-2">
+                            <span class="source-badge">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/BBC_News_2019.svg/1200px-BBC_News_2019.svg.png" alt="BBC Africa">
+                                BBC Africa
+                            </span>
+                            <span class="source-badge">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/France_24_logo.svg/1200px-France_24_logo.svg.png" alt="France 24">
+                                France 24
+                            </span>
+                            <span class="source-badge">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/RFI.svg/1200px-RFI.svg.png" alt="RFI">
+                                RFI
+                            </span>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2 text-gray-800 card-title">AfCFTA Shows 15% Growth in Intra-African Trade Since Implementation</h3>
+                        
+                        <div class="political-index mt-auto">
+                            <div class="index-item">
+                                <span class="index-label">Panafricaniste</span>
+                                <div class="index-bar">
+                                    <div class="index-fill panafricaniste" style="width: 85%"></div>
+                                </div>
+                                <span class="index-value">85%</span>
+                            </div>
+                            <div class="index-item">
+                                <span class="index-label">Nationaliste</span>
+                                <div class="index-bar">
+                                    <div class="index-fill nationaliste" style="width: 45%"></div>
+                                </div>
+                                <span class="index-value">45%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center text-sm text-gray-500 mt-4">
+                            <span>3 sources</span>
+                            <span>2h ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Load More Button -->
+        <div class="text-center mt-10">
+            <button class="bg-gray-800 text-white px-6 py-3 rounded-md font-medium hover:bg-gray-900 transition">Load More Stories</button>
+        </div>
+    </main>
+
+    <!-- Perspectives Comparison Section -->
+    <section class="py-12 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-8 text-center">Compare Political Perspectives</h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3 mb-8">
+                <button class="political-filter-btn px-3 py-2 rounded-full font-medium text-xs bg-green-100 text-green-800" data-filter="panafricaniste">Panafricaniste</button>
+                <button class="political-filter-btn px-3 py-2 rounded-full font-medium text-xs bg-purple-100 text-purple-800" data-filter="nationaliste">Nationaliste</button>
+                <button class="political-filter-btn px-3 py-2 rounded-full font-medium text-xs bg-blue-100 text-blue-800" data-filter="post-colonial">Post-Colonial</button>
+                <button class="political-filter-btn px-3 py-2 rounded-full font-medium text-xs bg-red-100 text-red-800" data-filter="pro-colonial">Pro-Colonial</button>
+                <button class="political-filter-btn px-3 py-2 rounded-full font-medium text-xs bg-cyan-100 text-cyan-800" data-filter="diaspora-centered">Diaspora</button>
+                <button class="political-filter-btn px-3 py-2 rounded-full font-medium text-xs bg-amber-100 text-amber-800" data-filter="afrofuturiste">Afrofuturiste</button>
+                <button class="political-filter-btn px-3 py-2 rounded-full font-medium text-xs bg-stone-100 text-stone-800" data-filter="traditionaliste">Traditionaliste</button>
+                <button class="political-filter-btn px-3 py-2 rounded-full font-medium text-xs bg-slate-100 text-slate-800" data-filter="decolonial-culturel">Décolonial</button>
+            </div>
+            
+            <div class="bg-white rounded-xl p-6 shadow-sm">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Perspective 1 -->
+                    <div class="perspective-card bg-white p-6 rounded-lg border border-gray-200">
+                        <div class="flex items-center mb-4">
+                            <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center mr-3">
+                                <i class="fas fa-user text-gray-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800">Panafrican View</h4>
+                                <span class="text-xs text-gray-500">African Union Analyst</span>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2 text-gray-800">Regional Integration Key to Africa's Economic Future</h3>
+                        <p class="text-gray-700 mb-4">"The success of AfCFTA demonstrates that when African nations work together, we can overcome colonial-era borders that were designed to divide us. This is just the beginning of true African economic independence."</p>
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="political-badge panafricaniste">Panafricaniste</span>
+                            <span class="text-gray-500">3 hours ago</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Perspective 2 -->
+                    <div class="perspective-card bg-white p-6 rounded-lg border border-gray-200">
+                        <div class="flex items-center mb-4">
+                            <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center mr-3">
+                                <i class="fas fa-user text-gray-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800">Nationalist Perspective</h4>
+                                <span class="text-xs text-gray-500">Political Scientist</span>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2 text-gray-800">Strong Nations First, Then Continental Unity</h3>
+                        <p class="text-gray-700 mb-4">"While continental cooperation is important, we must first strengthen our individual nations. Each country has unique challenges that require tailored solutions before we can effectively integrate at a continental level."</p>
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="political-badge nationaliste">Nationaliste</span>
+                            <span class="text-gray-500">5 hours ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter py-12">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto text-center">
+                <h2 class="text-2xl md:text-3xl font-bold mb-4">Stay Informed with Wona News</h2>
+                <p class="mb-6 opacity-90">Get daily or weekly digests of African news analyzed by political perspective, delivered straight to your inbox.</p>
+                
+                <div class="flex flex-col md:flex-row gap-3 max-w-xl mx-auto">
+                    <input type="email" placeholder="Your email address" class="flex-grow px-4 py-3 rounded-full text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button class="bg-blue-600 text-white px-6 py-3 rounded-full font-medium hover:bg-blue-700 transition">Subscribe</button>
+                </div>
+                
+                <p class="mt-4 text-sm opacity-75">We respect your privacy. Unsubscribe at any time.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-10 h-10 bg-gray-600 rounded-full flex items-center justify-center text-white font-bold text-xl">W</div>
+                        <span class="text-xl font-bold text-white">Wona News</span>
+                    </div>
+                    <p class="text-gray-300 mb-4">The intelligent platform for African perspectives on continental and global news.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-300 hover:text-white"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-300 hover:text-white"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-gray-300 hover:text-white"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="text-gray-300 hover:text-white"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold text-lg mb-4 text-white">Navigation</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-white">Home</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Topics</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Perspectives</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Analysis</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">About</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold text-lg mb-4 text-white">Perspectives</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-white">Panafricaniste</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Nationaliste</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Post-Colonial</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Diaspora</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Décolonial</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold text-lg mb-4 text-white">Company</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-white">About Us</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Our Methodology</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Careers</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Contact</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>© 2023 Wona News. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Filter functionality for political perspectives
+        document.querySelectorAll('.political-filter-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const filter = this.getAttribute('data-filter');
+                
+                // Remove active class from all buttons
+                document.querySelectorAll('.political-filter-btn').forEach(btn => {
+                    btn.classList.remove('ring-2', 'ring-white', 'ring-offset-2');
+                });
+                
+                // Add active class to clicked button
+                this.classList.add('ring-2', 'ring-white', 'ring-offset-2');
+                
+                // Filter perspective cards
+                document.querySelectorAll('.perspective-card').forEach(card => {
+                    if (filter === 'all') {
+                        card.style.display = 'block';
+                    } else {
+                        const hasBadge = card.querySelector(`.${filter}`);
+                        card.style.display = hasBadge ? 'block' : 'none';
+                    }
+                });
+                
+                // Filter news cards by showing only those with the selected perspective
+                document.querySelectorAll('.news-card').forEach(card => {
+                    const indexItems = card.querySelectorAll('.index-item');
+                    let hasPerspective = false;
+                    
+                    indexItems.forEach(item => {
+                        if (item.querySelector('.index-fill').classList.contains(filter)) {
+                            hasPerspective = true;
+                        }
+                    });
+                    
+                    card.style.display = hasPerspective ? 'block' : 'none';
+                });
+            });
+        });
+        
+        // Reset filters
+        function resetFilters() {
+            document.querySelectorAll('.political-filter-btn').forEach(btn => {
+                btn.classList.remove('ring-2', 'ring-white', 'ring-offset-2');
+            });
+            
+            document.querySelectorAll('.perspective-card, .news-card').forEach(card => {
+                card.style.display = 'block';
+            });
+        }
+        
+        // Add reset button functionality
+        const resetBtn = document.createElement('button');
+        resetBtn.textContent = 'Reset Filters';
+        resetBtn.className = 'bg-gray-200 text-gray-800 px-4 py-2 rounded-md font-medium hover:bg-gray-300 transition ml-4';
+        resetBtn.addEventListener('click', resetFilters);
+        
+        document.querySelector('.political-filter-btn').parentNode.appendChild(resetBtn);
+        
+        // Simple animation on scroll
+        const observerOptions = {
+            threshold: 0.1
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-fadeIn');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.news-card, .perspective-card').forEach(card => {
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>

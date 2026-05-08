@@ -1,0 +1,125 @@
+{
+  "version": "1.1",
+  "sources": [
+    {
+      "id": "bbc_africa",
+      "name": "BBC Africa",
+      "rss_url": "https://feeds.bbci.co.uk/news/world/africa/rss.xml",
+      "site_url": "https://www.bbc.com/news/world/africa",
+      "language": "en",
+      "country_origin": "UK",
+      "category": "international",
+      "logo_initials": "BBC"
+    },
+    {
+      "id": "france24_afrique",
+      "name": "France 24 Afrique",
+      "rss_url": "https://www.france24.com/fr/afrique/rss",
+      "site_url": "https://www.france24.com/fr/afrique/",
+      "language": "fr",
+      "country_origin": "FR",
+      "category": "international",
+      "logo_initials": "F24"
+    },
+    {
+      "id": "rfi_afrique",
+      "name": "RFI Afrique",
+      "rss_url": "https://www.rfi.fr/fr/afrique/rss",
+      "site_url": "https://www.rfi.fr/fr/afrique/",
+      "language": "fr",
+      "country_origin": "FR",
+      "category": "international",
+      "logo_initials": "RFI"
+    },
+    {
+      "id": "lemonde_afrique",
+      "name": "Le Monde Afrique",
+      "rss_url": "https://www.lemonde.fr/afrique/rss_full.xml",
+      "site_url": "https://www.lemonde.fr/afrique/",
+      "language": "fr",
+      "country_origin": "FR",
+      "category": "international",
+      "logo_initials": "LM"
+    },
+    {
+      "id": "guardian_africa",
+      "name": "The Guardian Africa",
+      "rss_url": "https://www.theguardian.com/world/africa/rss",
+      "site_url": "https://www.theguardian.com/world/africa",
+      "language": "en",
+      "country_origin": "UK",
+      "category": "international",
+      "logo_initials": "TG"
+    },
+    {
+      "id": "nyt_africa",
+      "name": "New York Times Africa",
+      "rss_url": "https://rss.nytimes.com/services/xml/rss/nyt/Africa.xml",
+      "site_url": "https://www.nytimes.com/section/world/africa",
+      "language": "en",
+      "country_origin": "US",
+      "category": "international",
+      "logo_initials": "NYT"
+    },
+    {
+      "id": "dw_africa_en",
+      "name": "DW Africa",
+      "rss_url": "https://rss.dw.com/rdf/rss-en-africa",
+      "site_url": "https://www.dw.com/en/africa/s-12768",
+      "language": "en",
+      "country_origin": "DE",
+      "category": "international",
+      "logo_initials": "DW"
+    },
+    {
+      "id": "voa_africa",
+      "name": "VOA Africa",
+      "rss_url": "https://www.voanews.com/api/zq$omeqi_y",
+      "site_url": "https://www.voaafrica.com/",
+      "language": "en",
+      "country_origin": "US",
+      "category": "international",
+      "logo_initials": "VOA"
+    },
+    {
+      "id": "jeune_afrique",
+      "name": "Jeune Afrique",
+      "rss_url": "https://www.jeuneafrique.com/feed/",
+      "site_url": "https://www.jeuneafrique.com/",
+      "language": "fr",
+      "country_origin": "FR",
+      "category": "panafrican",
+      "logo_initials": "JA"
+    },
+    {
+      "id": "allafrica",
+      "name": "AllAfrica",
+      "rss_url": "https://allafrica.com/tools/headlines/rdf/latest/headlines.rdf",
+      "site_url": "https://allafrica.com/",
+      "language": "en",
+      "country_origin": "US",
+      "category": "panafrican",
+      "logo_initials": "AA"
+    },
+    {
+      "id": "africa_news",
+      "name": "Africanews",
+      "rss_url": "https://www.africanews.com/feed/rss",
+      "site_url": "https://www.africanews.com/",
+      "language": "en",
+      "country_origin": "FR",
+      "category": "panafrican",
+      "logo_initials": "AN"
+    },
+    {
+      "id": "premium_times",
+      "name": "Premium Times",
+      "rss_url": "https://www.premiumtimesng.com/feed",
+      "site_url": "https://www.premiumtimesng.com/",
+      "language": "en",
+      "country_origin": "NG",
+      "category": "local",
+      "logo_initials": "PT"
+    }
+  ]
+}

@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wona.news — Intelligence médiatique africaine</title>
+  <meta name="description" content="Wona.news est une plateforme d'intelligence médiatique africaine. Aggrégation, analyse et contextualisation de l'actualité du continent et de la diaspora à travers des perspectives africaines." />
+
+  <!-- Favicon: navy square with white W, matches the brand mark -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='14' fill='%230E1F38'/%3E%3Ctext x='50' y='70' font-family='Georgia,serif' font-size='62' font-weight='700' fill='%23FBF7EE' text-anchor='middle'%3EW%3C/text%3E%3C/svg%3E" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='14' fill='%230E1F38'/%3E%3Ctext x='50' y='70' font-family='Georgia,serif' font-size='62' font-weight='700' fill='%23FBF7EE' text-anchor='middle'%3EW%3C/text%3E%3C/svg%3E" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+
+  <!-- Top ribbon -->
+  <div class="ribbon">
+    <span class="ribbon-mark"></span>
+    <span data-i18n="ribbon.tagline">Reclaiming the African narrative, one story at a time.</span>
+    <a href="#mission" class="ribbon-link" data-i18n="ribbon.cta">Notre mission</a>
+  </div>
+
+  <!-- Sticky header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="/" class="brand" aria-label="Wona.news">
+        <span class="brand-mark">W</span>
+        <span class="brand-text">
+          <span class="brand-word">Wona<span class="brand-dot">.</span>news</span>
+          <span class="brand-tagline" data-i18n="brand.tagline">Intelligence médiatique africaine</span>
+        </span>
+      </a>
+
+      <nav class="primary-nav" aria-label="Navigation principale">
+        <a href="#stories" class="nav-link" data-i18n="nav.news">Actualités</a>
+
+        <div class="nav-dropdown" id="perspectives-dropdown">
+          <button type="button" class="nav-link nav-link-toggle" aria-haspopup="true" aria-expanded="false" id="perspectives-toggle">
+            <span data-i18n="nav.perspectives">Perspectives</span>
+            <span class="nav-chevron" aria-hidden="true">▾</span>
+          </button>
+          <div class="dropdown-menu" id="perspectives-menu" role="menu">
+            <p class="dropdown-eyebrow" data-i18n="perspectives.eyebrow">Cinq perspectives africaines</p>
+            <div class="dropdown-items" id="perspectives-items"></div>
+            <button type="button" class="dropdown-clear" data-orientation="" data-i18n="perspectives.all">Toutes les perspectives</button>
+          </div>
+        </div>
+
+        <a href="#blindspot" class="nav-link" data-i18n="nav.blindspots">Angles morts</a>
+        <a href="#mission" class="nav-link" data-i18n="nav.mission">Mission</a>
+      </nav>
+
+      <div class="header-actions">
+        <div class="search">
+          <input type="search" id="search-input" data-i18n-placeholder="search.placeholder" placeholder="Rechercher" data-i18n-aria-label="search.placeholder" aria-label="Rechercher" />
+        </div>
+        <button class="lang-toggle" id="lang-toggle" aria-label="Switch language">
+          <span class="lang-current">FR</span>
+          <span class="lang-other">EN</span>
+        </button>
+        <a href="https://buymeacoffee.com/wonanews" target="_blank" rel="noopener" class="btn btn-donate">
+          <span class="btn-donate-icon" aria-hidden="true">♥</span>
+          <span data-i18n="btn.donate">Faire un don</span>
+        </a>
+        <a href="#subscribe" class="btn btn-primary" data-i18n="btn.subscribe">S'abonner</a>
+      </div>
+    </div>
+
+    <div class="container topic-strip" id="themes" aria-label="Thèmes en tendance">
+      <span class="topic-strip-label" data-i18n="topics.label">En tendance</span>
+      <div class="topic-chips" id="topic-chips"></div>
+    </div>
+  </header>
+
+  <main class="container main-grid">
+
+    <aside class="col-left" data-i18n-aria-label="briefing.title" aria-label="Briefing du jour">
+      <section class="panel">
+        <header class="panel-head">
+          <h2 class="panel-title" data-i18n="briefing.title">Briefing du jour</h2>
+          <span class="panel-date" id="briefing-date"></span>
+        </header>
+        <ol class="briefing-list" id="briefing-list"></ol>
+      </section>
+
+      <section class="panel" id="perspectives">
+        <header class="panel-head">
+          <h2 class="panel-title" data-i18n="perspectives.panelTitle">Perspectives africaines</h2>
+        </header>
+        <ul class="orientation-legend" id="orientation-legend"></ul>
+      </section>
+    </aside>
+
+    <section class="col-center" id="stories" data-i18n-aria-label="stories.aria" aria-label="Histoires">
+
+      <article class="featured" id="featured-story"></article>
+
+      <div class="section-head">
+        <h2 class="section-title" data-i18n="stories.headline">À la une</h2>
+        <div class="section-filters" id="orientation-filters"></div>
+      </div>
+
+      <div class="story-grid" id="story-grid"></div>
+
+      <div class="empty-state" id="empty-state" hidden data-i18n="stories.empty">
+        Aucune histoire ne correspond à vos filtres.
+      </div>
+    </section>
+
+    <aside class="col-right" id="blindspot" data-i18n-aria-label="blindspot.title" aria-label="Angles morts">
+
+      <!-- DONATE panel -->
+      <section class="panel panel-donate" id="donate">
+        <header class="panel-head">
+          <h2 class="panel-title" data-i18n="donate.title">Soutenir Wona</h2>
+          <span class="panel-tag panel-tag-donate" data-i18n="donate.tag">Indépendant</span>
+        </header>
+        <p class="donate-lede" data-i18n="donate.lede">
+          Wona.news est sans publicité, sans investisseur, sans agenda externe.
+          Votre soutien nous garde libres.
+        </p>
+
+        <!-- Where your support goes -->
+        <div class="donate-allocation">
+          <h3 class="donate-allocation-title" data-i18n="donate.allocation.title">Où va votre contribution</h3>
+          <ul class="donate-allocation-list">
+            <li data-i18n="donate.allocation.compute">Calcul & modèles : améliorer la classification des perspectives et la qualité des résumés.</li>
+            <li data-i18n="donate.allocation.coverage">Couverture des sources : intégrer plus de médias locaux et de langues sous-représentées.</li>
+            <li data-i18n="donate.allocation.features">Priorités des contributeurs : développer en priorité les fonctionnalités les plus demandées.</li>
+          </ul>
+        </div>
+
+        <div class="donate-tiers">
+          <a href="https://buymeacoffee.com/wonanews" class="donate-tier" target="_blank" rel="noopener">
+            <span class="donate-tier-amount">3 $</span>
+            <span class="donate-tier-label" data-i18n="donate.tier1">un café</span>
+          </a>
+          <a href="https://buymeacoffee.com/wonanews" class="donate-tier donate-tier-featured" target="_blank" rel="noopener">
+            <span class="donate-tier-amount">10 $</span>
+            <span class="donate-tier-label" data-i18n="donate.tier2">un mois</span>
+          </a>
+          <a href="https://buymeacoffee.com/wonanews" class="donate-tier" target="_blank" rel="noopener">
+            <span class="donate-tier-amount">25 $</span>
+            <span class="donate-tier-label" data-i18n="donate.tier3">soutien</span>
+          </a>
+        </div>
+        <a href="https://buymeacoffee.com/wonanews" class="donate-custom" target="_blank" rel="noopener" data-i18n="donate.custom">
+          Choisir un autre montant →
+        </a>
+      </section>
+
+      <section class="panel panel-blindspot">
+        <header class="panel-head">
+          <h2 class="panel-title" data-i18n="blindspot.title">Angles morts</h2>
+          <span class="panel-tag" data-i18n="blindspot.tag">Sous-couvert</span>
+        </header>
+        <p class="panel-lede" data-i18n="blindspot.lede">Les histoires que les fils dominants oublient de raconter.</p>
+        <div id="blindspot-list"></div>
+      </section>
+
+      <section class="panel" id="about">
+        <header class="panel-head">
+          <h2 class="panel-title" data-i18n="about.title">À propos de Wona</h2>
+        </header>
+        <p class="about-copy" data-i18n="about.copy">
+          Wona.news contextualise l'actualité du continent et de la diaspora à travers des grilles de lecture africaines.
+          Pas de gauche, pas de droite. Des perspectives nées ici.
+        </p>
+        <a href="#mission" class="text-link" data-i18n="about.cta">Lire le manifeste</a>
+      </section>
+    </aside>
+
+  </main>
+
+  <section class="mission" id="mission">
+    <div class="container mission-inner">
+      <p class="mission-eyebrow" data-i18n="mission.eyebrow">Notre engagement</p>
+      <h2 class="mission-headline" data-i18n-html="mission.headline">
+        Reprendre le récit africain.<br />
+        Le contextualiser. Le diffuser.
+      </h2>
+      <p class="mission-body" data-i18n="mission.body">
+        Wona.news aggrège des sources africaines et internationales,
+        produit des résumés courts et lisibles,
+        et révèle l'orientation idéologique de chaque récit
+        à travers cinq perspectives africaines.
+      </p>
+      <a href="https://buymeacoffee.com/wonanews" target="_blank" rel="noopener" class="mission-cta" data-i18n="mission.cta">
+        Soutenir le projet →
+      </a>
+    </div>
+  </section>
+
+  <!-- Subscribe / Newsletter (Buttondown) -->
+  <section class="subscribe" id="subscribe">
+    <div class="container subscribe-inner">
+      <div>
+        <h2 class="subscribe-title" data-i18n="subscribe.title">Le briefing Wona, chaque matin.</h2>
+        <p class="subscribe-body" data-i18n="subscribe.body">Recevez chaque matin une synthèse de l'actualité africaine, contextualisée et classée par perspective.</p>
+      </div>
+      <!--
+        Buttondown embed form. Replace REPLACE_WITH_YOUR_BUTTONDOWN_USERNAME below
+        with your real username after signing up at https://buttondown.com/register
+        Free up to 100 subscribers, no API key needed.
+      -->
+      <form
+        class="subscribe-form"
+        action="https://buttondown.com/api/emails/embed-subscribe/wonanews"
+        method="post"
+        target="popupwindow"
+      >
+        <input
+          type="email"
+          name="email"
+          required
+          data-i18n-placeholder="subscribe.placeholder"
+          placeholder="vous@example.com"
+          aria-label="Email"
+        />
+        <input type="hidden" name="tag" value="wona-news-frontend" />
+        <button type="submit" class="btn btn-primary" data-i18n="btn.subscribe">S'abonner</button>
+      </form>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <span class="brand-word">Wona<span class="brand-dot">.</span>news</span>
+        <p data-i18n="footer.brandTagline">Plateforme d'intelligence médiatique africaine.</p>
+      </div>
+      <div class="footer-col">
+        <h3 data-i18n="footer.platform">Plateforme</h3>
+        <ul>
+          <li><a href="#stories" data-i18n="nav.news">Actualités</a></li>
+          <li><a href="#blindspot" data-i18n="nav.blindspots">Angles morts</a></li>
+          <li><a href="#perspectives" data-i18n="nav.perspectives">Perspectives</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3 data-i18n="footer.support">Soutenir</h3>
+        <ul>
+          <li><a href="https://buymeacoffee.com/wonanews" target="_blank" rel="noopener" data-i18n="btn.donate">Faire un don</a></li>
+          <li><a href="#subscribe" data-i18n="footer.newsletter">S'abonner à la newsletter</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3 data-i18n="footer.method">Méthode</h3>
+        <ul>
+          <li><a href="#mission" data-i18n="footer.manifesto">Manifeste</a></li>
+          <li><a href="#about" data-i18n="footer.methodology">Méthodologie</a></li>
+          <li><a href="#about" data-i18n="footer.sources">Sources</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3 data-i18n="footer.contact">Contact</h3>
+        <ul>
+          <li><a href="mailto:wonanews@proton.me">wonanews@proton.me</a></li>
+          <li><a href="#">Twitter</a></li>
+          <li><a href="#">LinkedIn</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <span>© 2026 Wona.news</span>
+      <span data-i18n="footer.tagline">Indépendant. Continental. Diasporique.</span>
+    </div>
+  </footer>
+
+  <a href="https://buymeacoffee.com/wonanews" target="_blank" rel="noopener" class="floating-donate" aria-label="Faire un don">
+    <span class="floating-donate-icon">♥</span>
+    <span class="floating-donate-label" data-i18n="floating.support">Soutenir</span>
+  </a>
+
+  <script src="assets/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+[build]
+  command = "bash scripts/sync_data.sh"
+  publish = "frontend"
+
+[[headers]]
+  for = "/data/*"
+  [headers.values]
+    Cache-Control = "public, max-age=300, s-maxage=300"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, immutable"

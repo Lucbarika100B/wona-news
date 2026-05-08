@@ -1,0 +1,9 @@
+# Optional ML dependencies for zero-shot classification.
+# Install with: pip install -r requirements-ml.txt
+#
+# These are large (~1GB total). Without them, the pipeline falls back to
+# the keyword-only classifier automatically.
+
+transformers>=4.40.0
+torch>=2.2.0
+sentencepiece>=0.2.0

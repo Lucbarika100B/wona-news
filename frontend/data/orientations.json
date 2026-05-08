@@ -1,0 +1,60 @@
+{
+  "version": "1.0",
+  "orientations": [
+    {
+      "id": "panafricaniste",
+      "name_fr": "Panafricaniste",
+      "name_en": "Pan-Africanist",
+      "description_fr": "Vision de l'unité continentale, de la souveraineté économique africaine et de la solidarité entre nations africaines.",
+      "description_en": "Continental unity, African economic sovereignty, and solidarity between African nations.",
+      "color": "#2D8654",
+      "color_soft": "#E4EFE7"
+    },
+    {
+      "id": "post_colonial_critique",
+      "name_fr": "Critique Post-Coloniale",
+      "name_en": "Post-Colonial Critique",
+      "description_fr": "Analyse des structures héritées du colonialisme, du néocolonialisme et de leurs effets contemporains.",
+      "description_en": "Analysis of structures inherited from colonialism, neocolonialism, and their contemporary effects.",
+      "color": "#D17141",
+      "color_soft": "#F4E2D6"
+    },
+    {
+      "id": "nationaliste",
+      "name_fr": "Nationaliste",
+      "name_en": "Nationalist",
+      "description_fr": "Priorité à la souveraineté nationale, à l'autonomie de l'État et à l'intérêt national avant l'intégration continentale.",
+      "description_en": "Priority on national sovereignty, state autonomy, and national interest before continental integration.",
+      "color": "#C99A24",
+      "color_soft": "#F4ECD2"
+    },
+    {
+      "id": "pre_colonial_referentiel",
+      "name_fr": "Référentiel Pré-Colonial",
+      "name_en": "Pre-Colonial Referential",
+      "description_fr": "Récupération des savoirs, structures et systèmes politiques africains antérieurs à la colonisation.",
+      "description_en": "Recovery of African knowledge, structures, and political systems predating colonization.",
+      "color": "#5089A8",
+      "color_soft": "#DEE9F0"
+    },
+    {
+      "id": "diaspora",
+      "name_fr": "Diaspora",
+      "name_en": "Diaspora-centered",
+      "description_fr": "Perspectives des communautés africaines dans le monde et de leurs liens avec le continent.",
+      "description_en": "Perspectives from African communities worldwide and their ties to the continent.",
+      "color": "#7E5E96",
+      "color_soft": "#E7DFEC"
+    },
+    {
+      "id": "post_colonial",
+      "name_fr": "Post-Colonial",
+      "name_en": "Post-Colonial",
+      "description_fr": "Cadre secondaire optionnel pour les analyses post-indépendance sans posture critique frontale.",
+      "description_en": "Optional secondary frame for post-independence analyses without frontal critical posture.",
+      "color": "#8B6F47",
+      "color_soft": "#EAE0D1",
+      "secondary": true
+    }
+  ]
+}
