@@ -64,7 +64,7 @@
 
       "mission.eyebrow": "Notre engagement",
       "mission.headline": "Reprendre le récit africain.<br />Le contextualiser. Le diffuser.",
-      "mission.body": "Wona.news aggrège des sources africaines et internationales, produit des résumés courts et lisibles, et révèle l'orientation idéologique de chaque récit à travers cinq perspectives africaines. Pas une plateforme contre, une plateforme depuis.",
+      "mission.body": "Wona.news aggrège des sources africaines et internationales, produit des résumés courts et lisibles, et révèle l'orientation idéologique de chaque récit à travers cinq perspectives africaines.",
       "mission.cta": "Soutenir le projet →",
 
       "subscribe.title": "Le briefing Wona, chaque matin.",
@@ -152,7 +152,7 @@
 
       "mission.eyebrow": "Our commitment",
       "mission.headline": "Reclaim the African narrative.<br />Contextualize it. Spread it.",
-      "mission.body": "Wona.news aggregates African and international sources, produces short readable summaries, and reveals the ideological orientation of each story through five African perspectives. Not a platform against, a platform from.",
+      "mission.body": "Wona.news aggregates African and international sources, produces short readable summaries, and reveals the ideological orientation of each story through five African perspectives.",
       "mission.cta": "Support the project →",
 
       "subscribe.title": "The Wona briefing, every morning.",
