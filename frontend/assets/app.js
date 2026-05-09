@@ -663,6 +663,9 @@
     const dropdownEl = document.getElementById("perspectives-items");
     if (dropdownEl) dropdownEl.innerHTML = renderDropdownItems();
 
+    const mobilePerspectivesEl = document.getElementById("mobile-perspectives-items");
+    if (mobilePerspectivesEl) mobilePerspectivesEl.innerHTML = renderMobilePerspectives();
+
     syncOrientationActiveState();
 
     const topicEl = document.getElementById("topic-chips");
@@ -709,10 +712,108 @@
   }
 
   // ----------------------------------------------------------------------------
+  // Mobile drawer + Mission modal
+  // ----------------------------------------------------------------------------
+  function renderMobilePerspectives() {
+    return STATE.orientations
+      .filter(o => !o.secondary)
+      .map(o => `
+        <li>
+          <button type="button" data-orientation="${escapeHTML(o.id)}" data-close-drawer>
+            <span class="perspective-dot" style="background:${o.color}"></span>
+            <span class="perspective-name">${escapeHTML(orientationName(o))}</span>
+          </button>
+        </li>
+      `).join("");
+  }
+
+  function openModal(name) {
+    const modal = document.getElementById(`${name}-modal`);
+    if (!modal) return;
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+  }
+  function closeAllModals() {
+    document.querySelectorAll(".modal.is-open").forEach(m => {
+      m.classList.remove("is-open");
+      m.setAttribute("aria-hidden", "true");
+    });
+    document.body.style.overflow = "";
+  }
+
+  function openDrawer() {
+    const drawer = document.getElementById("mobile-drawer");
+    const toggle = document.getElementById("mobile-menu-toggle");
+    if (!drawer) return;
+    drawer.classList.add("is-open");
+    drawer.setAttribute("aria-hidden", "false");
+    if (toggle) {
+      toggle.classList.add("is-open");
+      toggle.setAttribute("aria-expanded", "true");
+    }
+    document.body.style.overflow = "hidden";
+  }
+  function closeDrawer() {
+    const drawer = document.getElementById("mobile-drawer");
+    const toggle = document.getElementById("mobile-menu-toggle");
+    if (!drawer) return;
+    drawer.classList.remove("is-open");
+    drawer.setAttribute("aria-hidden", "true");
+    if (toggle) {
+      toggle.classList.remove("is-open");
+      toggle.setAttribute("aria-expanded", "false");
+    }
+    document.body.style.overflow = "";
+  }
+
+  // ----------------------------------------------------------------------------
   // Event wiring
   // ----------------------------------------------------------------------------
   function wireEvents() {
     document.addEventListener("click", (e) => {
+      // Modal trigger (open mission modal etc.) — must run BEFORE anchor handling
+      const modalTrigger = e.target.closest("[data-modal-trigger]");
+      if (modalTrigger) {
+        e.preventDefault();
+        openModal(modalTrigger.dataset.modalTrigger);
+        closeDrawer();
+        return;
+      }
+
+      // Modal close
+      if (e.target.closest("[data-close-modal]")) {
+        e.preventDefault();
+        closeAllModals();
+        return;
+      }
+
+      // Mobile menu toggle
+      if (e.target.closest("#mobile-menu-toggle")) {
+        e.preventDefault();
+        const drawer = document.getElementById("mobile-drawer");
+        if (drawer && drawer.classList.contains("is-open")) {
+          closeDrawer();
+        } else {
+          openDrawer();
+        }
+        return;
+      }
+
+      // Drawer close handlers (backdrop, close button, link clicks inside drawer)
+      if (e.target.closest("[data-close-drawer]")) {
+        // Don't preventDefault — let the link navigation happen, but close drawer
+        closeDrawer();
+        // Fall through so the rest of the click handlers (orientation, etc) still fire
+      }
+
+      // Mobile lang toggle
+      if (e.target.closest("#lang-toggle-mobile")) {
+        e.preventDefault();
+        setLanguage(STATE.lang === "fr" ? "en" : "fr");
+        return;
+      }
+
       const langBtn = e.target.closest("#lang-toggle");
       if (langBtn) {
         e.preventDefault();
@@ -752,7 +853,11 @@
     });
 
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") closeAllDropdowns();
+      if (e.key === "Escape") {
+        closeAllDropdowns();
+        closeAllModals();
+        closeDrawer();
+      }
     });
 
     const search = document.getElementById("search-input");

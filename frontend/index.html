@@ -22,12 +22,18 @@
   <div class="ribbon">
     <span class="ribbon-mark"></span>
     <span data-i18n="ribbon.tagline">Reclaiming the African narrative, one story at a time.</span>
-    <a href="#mission" class="ribbon-link" data-i18n="ribbon.cta">Notre mission</a>
+    <a href="#mission" class="ribbon-link" data-modal-trigger="mission" data-i18n="ribbon.cta">Notre mission</a>
   </div>
 
   <!-- Sticky header -->
   <header class="site-header">
     <div class="container header-inner">
+      <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Menu" aria-expanded="false">
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+      </button>
+
       <a href="/" class="brand" aria-label="Wona.news">
         <span class="brand-mark">W</span>
         <span class="brand-text">
@@ -52,7 +58,7 @@
         </div>
 
         <a href="#blindspot" class="nav-link" data-i18n="nav.blindspots">Angles morts</a>
-        <a href="#mission" class="nav-link" data-i18n="nav.mission">Mission</a>
+        <a href="#mission" class="nav-link" data-modal-trigger="mission" data-i18n="nav.mission">Mission</a>
       </nav>
 
       <div class="header-actions">
@@ -112,7 +118,7 @@
       </div>
     </section>
 
-    <aside class="col-right" id="blindspot" data-i18n-aria-label="blindspot.title" aria-label="Angles morts">
+    <aside class="col-right">
 
       <!-- DONATE panel -->
       <section class="panel panel-donate" id="donate">
@@ -163,7 +169,7 @@
         <div id="achievement-list"></div>
       </section>
 
-      <section class="panel panel-blindspot">
+      <section class="panel panel-blindspot" id="blindspot">
         <header class="panel-head">
           <h2 class="panel-title" data-i18n="blindspot.title">Angles morts</h2>
           <span class="panel-tag" data-i18n="blindspot.tag">Sous-couvert</span>
@@ -180,7 +186,7 @@
           Wona.news contextualise l'actualité du continent et de la diaspora à travers des grilles de lecture africaines.
           Pas de gauche, pas de droite. Des perspectives nées ici.
         </p>
-        <a href="#mission" class="text-link" data-i18n="about.cta">Lire le manifeste</a>
+        <a href="#mission" class="text-link" data-modal-trigger="mission" data-i18n="about.cta">Lire le manifeste</a>
       </section>
     </aside>
 
@@ -270,7 +276,7 @@
       <div class="footer-col">
         <h3 data-i18n="footer.contact">Contact</h3>
         <ul>
-          <li><a href="mailto:wonanews@proton.me">wonanews@proton.me</a></li>
+          <li><a href="mailto:hello@wona.news">hello@wona.news</a></li>
           <li><a href="#">Twitter</a></li>
           <li><a href="#">LinkedIn</a></li>
         </ul>
@@ -286,6 +292,47 @@
     <span class="floating-donate-icon">♥</span>
     <span class="floating-donate-label" data-i18n="floating.support">Soutenir</span>
   </a>
+
+  <!-- Mobile drawer -->
+  <div class="mobile-drawer" id="mobile-drawer" aria-hidden="true">
+    <div class="mobile-drawer-backdrop" data-close-drawer></div>
+    <nav class="mobile-drawer-panel" aria-label="Menu mobile">
+      <div class="mobile-drawer-head">
+        <span class="brand-word">Wona<span class="brand-dot">.</span>news</span>
+        <button type="button" class="mobile-drawer-close" data-close-drawer aria-label="Fermer">×</button>
+      </div>
+      <ul class="mobile-drawer-list">
+        <li><a href="#stories" data-close-drawer data-i18n="nav.news">Actualités</a></li>
+        <li><a href="#blindspot" data-close-drawer data-i18n="nav.blindspots">Angles morts</a></li>
+        <li><a href="#mission" data-close-drawer data-modal-trigger="mission" data-i18n="nav.mission">Mission</a></li>
+      </ul>
+      <p class="mobile-drawer-eyebrow" data-i18n="perspectives.eyebrow">Cinq perspectives africaines</p>
+      <ul class="mobile-drawer-perspectives" id="mobile-perspectives-items"></ul>
+      <div class="mobile-drawer-actions">
+        <button type="button" class="lang-toggle lang-toggle-mobile" id="lang-toggle-mobile" aria-label="Changer de langue">
+          <span class="lang-current">FR</span>
+          <span class="lang-other">EN</span>
+        </button>
+        <a href="https://buymeacoffee.com/wonanews" target="_blank" rel="noopener" class="btn btn-donate" data-close-drawer>
+          <span class="btn-donate-icon" aria-hidden="true">♥</span>
+          <span data-i18n="btn.donate">Faire un don</span>
+        </a>
+        <a href="#subscribe" class="btn btn-primary" data-close-drawer data-i18n="btn.subscribe">S'abonner</a>
+      </div>
+    </nav>
+  </div>
+
+  <!-- Mission modal -->
+  <div class="modal" id="mission-modal" aria-hidden="true" role="dialog" aria-labelledby="mission-modal-title">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-panel">
+      <button type="button" class="modal-close" data-close-modal aria-label="Fermer">×</button>
+      <p class="modal-eyebrow" data-i18n="mission.eyebrow">Notre engagement</p>
+      <h2 class="modal-headline" id="mission-modal-title" data-i18n-html="mission.headline">Reprendre le récit africain.<br />Le contextualiser. Le diffuser.</h2>
+      <p class="modal-body" data-i18n="mission.body">Wona.news aggrège des sources africaines et internationales, produit des résumés courts et lisibles, et révèle l'orientation idéologique de chaque récit à travers cinq perspectives africaines. Pas une plateforme contre, une plateforme depuis.</p>
+      <a href="https://buymeacoffee.com/wonanews" target="_blank" rel="noopener" class="modal-cta" data-i18n="mission.cta">Soutenir le projet →</a>
+    </div>
+  </div>
 
   <script src="assets/app.js" defer></script>
 </body>
