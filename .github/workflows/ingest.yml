@@ -9,10 +9,10 @@ on:
       mode:
         description: "Classification mode"
         type: choice
-        default: "keyword"
+        default: "full_ml"
         options:
-          - keyword
           - full_ml
+          - keyword
 
 permissions:
   contents: write
@@ -24,14 +24,13 @@ concurrency:
 jobs:
   ingest:
     runs-on: ubuntu-latest
-    # Generous timeout in case full_ml mode is selected manually.
-    # Keyword mode (default) typically finishes in 5-8 minutes.
-    timeout-minutes: 60
+    # Generous overall ceiling. Step-level timeouts gate the inner work.
+    timeout-minutes: 75
     env:
       HF_HOME: ${{ github.workspace }}/.cache/huggingface
       TRANSFORMERS_VERBOSITY: error
-      # Scheduled runs default to keyword. Manual runs respect the input.
-      WONA_MODE: ${{ github.event.inputs.mode || 'keyword' }}
+      # Scheduled and dispatch runs default to full_ml. Manual override keyword.
+      WONA_MODE: ${{ github.event.inputs.mode || 'full_ml' }}
 
     steps:
       - name: Checkout
@@ -48,13 +47,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Install ML dependencies (CPU torch) — only in full_ml mode
+      # ML deps and model cache are only needed for full_ml mode.
+      - name: Install ML dependencies (CPU torch)
         if: env.WONA_MODE == 'full_ml'
         run: |
           pip install --index-url https://download.pytorch.org/whl/cpu torch
           pip install transformers sentencepiece
 
-      - name: Cache HuggingFace models — only in full_ml mode
+      - name: Cache HuggingFace models
         if: env.WONA_MODE == 'full_ml'
         uses: actions/cache@v4
         with:
@@ -62,17 +62,33 @@ jobs:
           key: hf-models-mdeberta-v3-base-v1
           restore-keys: hf-models-
 
-      - name: Run pipeline (keyword mode)
+      # Try full ML first. Step-level timeout caps it at 45 min.
+      # continue-on-error: true means if it fails or times out, the next step runs.
+      - name: Run pipeline (full ML mode)
+        id: ml_run
+        if: env.WONA_MODE == 'full_ml'
+        continue-on-error: true
+        timeout-minutes: 45
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: python -m pipeline.run --verbose
+
+      # Fallback: if full ML didn't succeed, run keyword-only.
+      # Reliable, fast (~5-8 min), guarantees data ships even on bad days.
+      - name: Fallback to keyword mode (if ML failed or timed out)
+        if: env.WONA_MODE == 'full_ml' && steps.ml_run.outcome != 'success'
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: |
+          echo "Full ML did not succeed (outcome: ${{ steps.ml_run.outcome }}). Running keyword fallback."
+          python -m pipeline.run --keyword-only --verbose
+
+      # Manual override path: user explicitly chose keyword mode.
+      - name: Run pipeline (keyword mode, manual override)
         if: env.WONA_MODE == 'keyword'
         env:
           PYTHONUNBUFFERED: "1"
         run: python -m pipeline.run --keyword-only --verbose
-
-      - name: Run pipeline (full ML mode)
-        if: env.WONA_MODE == 'full_ml'
-        env:
-          PYTHONUNBUFFERED: "1"
-        run: python -m pipeline.run --verbose
 
       - name: Sync data into frontend
         run: bash scripts/sync_data.sh
@@ -86,5 +102,9 @@ jobs:
             echo "No changes to commit."
             exit 0
           fi
-          git commit -m "data: daily ingestion $(date -u +'%Y-%m-%d') (mode=$WONA_MODE)"
+          MODE_TAG="$WONA_MODE"
+          if [ "${{ steps.ml_run.outcome }}" = "failure" ] || [ "${{ steps.ml_run.outcome }}" = "cancelled" ]; then
+            MODE_TAG="$WONA_MODE+fallback"
+          fi
+          git commit -m "data: daily ingestion $(date -u +'%Y-%m-%d') (mode=$MODE_TAG)"
           git push
