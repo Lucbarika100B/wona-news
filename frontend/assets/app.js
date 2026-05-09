@@ -41,6 +41,11 @@
       "blindspot.empty": "Aucun angle mort détecté aujourd'hui.",
       "blindspot.concentration": "Concentration",
 
+      "achievement.title": "Réussites",
+      "achievement.tag": "Mise en avant",
+      "achievement.lede": "Ce que l'Afrique et sa diaspora bâtissent. Entrepreneuriat, culture, science, sport.",
+      "achievement.empty": "Pas de réussites en vedette aujourd'hui.",
+
       "donate.title": "Soutenir Wona",
       "donate.tag": "Indépendant",
       "donate.lede": "Wona.news est sans publicité, sans investisseur, sans agenda externe. Votre soutien nous garde libres.",
@@ -123,6 +128,11 @@
       "blindspot.lede": "Stories the dominant feeds forget to tell.",
       "blindspot.empty": "No blindspots detected today.",
       "blindspot.concentration": "Concentration",
+
+      "achievement.title": "Achievements",
+      "achievement.tag": "Spotlight",
+      "achievement.lede": "What Africa and its diaspora are building. Entrepreneurship, culture, science, sport.",
+      "achievement.empty": "No achievements featured today.",
 
       "donate.title": "Support Wona",
       "donate.tag": "Independent",
@@ -505,6 +515,32 @@
   }
 
   // ----------------------------------------------------------------------------
+  // Rendering: achievement panel
+  // ----------------------------------------------------------------------------
+  function renderAchievements(stories) {
+    const items = stories.filter(s => s.achievement);
+    if (items.length === 0) {
+      return `<p class="panel-lede" style="font-style:italic;opacity:0.7;">${escapeHTML(t("achievement.empty"))}</p>`;
+    }
+    return items.slice(0, 4).map(s => {
+      const sources = s.sources || [];
+      const url = sources[0] && sources[0].url;
+      const sourceName = sources[0] ? sources[0].name : "";
+      const inner = `
+        <h4 class="achievement-card-title">${escapeHTML(s.title)}</h4>
+        <div class="achievement-card-meta">
+          <span class="achievement-card-source">${escapeHTML(sourceName)}</span>
+          <span>·</span>
+          <span>${relativeTime(s.published_at)}</span>
+        </div>`;
+      return `
+        <div class="achievement-card">
+          ${url ? `<a href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer" class="achievement-card-link">${inner}</a>` : inner}
+        </div>`;
+    }).join("");
+  }
+
+  // ----------------------------------------------------------------------------
   // Rendering: blindspot panel
   // ----------------------------------------------------------------------------
   function renderBlindspots(stories) {
@@ -614,6 +650,9 @@
 
     const blindspotList = document.getElementById("blindspot-list");
     if (blindspotList) blindspotList.innerHTML = renderBlindspots(STATE.stories);
+
+    const achievementList = document.getElementById("achievement-list");
+    if (achievementList) achievementList.innerHTML = renderAchievements(STATE.stories);
 
     const legendEl = document.getElementById("orientation-legend");
     if (legendEl) legendEl.innerHTML = renderOrientationLegend();

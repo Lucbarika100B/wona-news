@@ -50,6 +50,9 @@ def _build_story(
     summary = summarize.summarize(lead.raw_text, language=lead.source_language)
     is_blindspot, blindspot_score, note = blindspot.compute_blindspot(cluster_articles, sources)
 
+    # Achievement: any contributing source carries category="achievement"
+    is_achievement = any(a.source_category == "achievement" for a in cluster_articles)
+
     return {
         "id": story_id,
         "title": lead.title,
@@ -61,6 +64,7 @@ def _build_story(
         "blindspot": is_blindspot,
         "blindspot_score": blindspot_score,
         "blindspot_note": note,
+        "achievement": is_achievement,
         "image_url": next((a.image_url for a in cluster_articles if a.image_url), None),
         "sources": [
             {
@@ -97,6 +101,7 @@ def run(
         "total_stories": len(stories),
         "total_sources": len({a.source_id for a in cleaned}),
         "blindspot_count": sum(1 for s in stories if s["blindspot"]),
+        "achievement_count": sum(1 for s in stories if s.get("achievement")),
     }
     store.write_articles(stories, stats)
     return stats
