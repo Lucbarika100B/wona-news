@@ -652,10 +652,13 @@ body {
    ========================================================================= */
 .main-grid {
   display: grid;
-  grid-template-columns: 280px minmax(0, 1fr) 320px;
+  grid-template-columns: minmax(0, 1fr) 320px;
   gap: 32px;
   padding-top: 40px;
   padding-bottom: 80px;
+}
+.main-grid > .col-left {
+  display: none;
 }
 @media (max-width: 1100px) {
   .main-grid {
@@ -1799,12 +1802,22 @@ a.source-pill:hover {
 }
 
 /* ============================================================================
-   Card layout — minimal overrides for click affordance + smaller image area
-   Cards size naturally to their content. No height cap, no clipping.
+   Postcard cards: 3 across, wider than tall, image + title + 1-line summary + bar
+   Briefing panel hidden on desktop, shown on mobile/tablet only.
    ========================================================================= */
+
+/* Hide today's briefing panel on desktop and tablet */
+@media (min-width: 1101px) {
+  .briefing-mobile-only { display: none !important; }
+}
+
+/* Cards: postcard shape, click-to-modal affordance */
 .story-card {
   cursor: pointer;
   transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100%;
 }
 .story-card:hover {
   transform: translateY(-2px);
@@ -1815,23 +1828,90 @@ a.source-pill:hover {
   outline: 2px solid var(--clay-500);
   outline-offset: 2px;
 }
+
+/* Image area: fixed height for consistent postcard tops */
 .story-card .story-media {
-  height: 180px;
-  min-height: 180px;
-  max-height: 180px;
-  overflow: hidden;
-  flex-shrink: 0;
+  height: 170px !important;
+  min-height: 170px !important;
+  max-height: 170px !important;
+  overflow: hidden !important;
+  flex-shrink: 0 !important;
 }
 .story-card .story-media img,
 .story-card .story-media .media-fallback {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
 }
 .story-card .story-media .media-fallback {
   display: grid;
   place-items: center;
 }
+
+/* Body: tight, postcard-style */
+.story-card .story-body {
+  padding: 12px 14px 12px !important;
+  gap: 6px !important;
+  flex: 1 !important;
+  min-height: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Source meta row: smaller */
+.story-card .story-meta {
+  gap: 6px;
+}
+.story-card .source-pill {
+  font-size: 10px !important;
+  padding: 2px 5px 2px 3px !important;
+}
+.story-card .source-pill-mark {
+  width: 16px;
+  height: 16px;
+  font-size: 8px;
+}
+.story-card .source-count {
+  font-size: 10px;
+}
+
+/* Title: tight 2-line clamp */
+.story-card .story-title {
+  font-size: 14.5px !important;
+  line-height: 1.25 !important;
+  -webkit-line-clamp: 2 !important;
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+}
+
+/* Summary: 1-line as user requested */
+.story-card .story-summary {
+  font-size: 11.5px !important;
+  line-height: 1.35 !important;
+  -webkit-line-clamp: 1 !important;
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  color: var(--ink-muted);
+}
+
+/* Orientation bar pinned to bottom */
+.story-card .orientation-bar {
+  margin-top: auto !important;
+}
+.story-card .orientation-legend-mini {
+  display: none;
+}
+
+/* On medium screens, briefing panel sits naturally below other right-column items */
+@media (max-width: 1100px) {
+  .briefing-mobile-only { display: block; }
+}
+
+/* Featured card: clickable cursor */
 .featured[data-story-id] {
   cursor: pointer;
 }
@@ -1839,6 +1919,8 @@ a.source-pill:hover {
   border-color: var(--sand-400, #d8c8a6);
   box-shadow: 0 10px 28px -12px rgba(14, 31, 56, 0.18);
 }
+
+/* Source pills inside cards stay clickable as direct source links */
 .source-pill[data-stop-card] {
   cursor: pointer;
   position: relative;
@@ -1889,4 +1971,22 @@ a.source-pill:hover {
 @media (max-width: 600px) {
   .story-modal-title { font-size: 20px; }
   .story-modal-summary { font-size: 14.5px; }
+}
+
+/* Colored dot on each orientation filter chip — matches legend + orientation bar */
+.filter-chip {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+}
+.filter-chip-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+/* When chip is active (navy bg), keep dot visible with a subtle ring */
+.filter-chip.is-active .filter-chip-dot {
+  box-shadow: 0 0 0 1.5px var(--sand-50);
 }

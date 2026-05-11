@@ -582,7 +582,7 @@
     const all = `<button class="filter-chip" data-orientation="">${escapeHTML(t("stories.allFilter"))}</button>`;
     const chips = STATE.orientations
       .filter(o => !o.secondary)
-      .map(o => `<button class="filter-chip" data-orientation="${escapeHTML(o.id)}">${escapeHTML(orientationName(o))}</button>`)
+      .map(o => `<button class="filter-chip" data-orientation="${escapeHTML(o.id)}"><span class="filter-chip-dot" style="background:${o.color}"></span>${escapeHTML(orientationName(o))}</button>`)
       .join("");
     return all + chips;
   }

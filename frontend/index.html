@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Wona.news — Intelligence médiatique africaine</title>
+  <title>Wona.news - Intelligence médiatique africaine</title>
   <meta name="description" content="Wona.news est une plateforme d'intelligence médiatique africaine. Aggrégation, analyse et contextualisation de l'actualité du continent et de la diaspora à travers des perspectives africaines." />
 
   <!-- Favicon: navy square with white W, matches the brand mark -->
@@ -91,14 +91,6 @@
           <h2 class="panel-title" data-i18n="perspectives.panelTitle">Perspectives africaines</h2>
         </header>
         <ul class="orientation-legend" id="orientation-legend"></ul>
-      </section>
-
-      <section class="panel">
-        <header class="panel-head">
-          <h2 class="panel-title" data-i18n="briefing.title">Briefing du jour</h2>
-          <span class="panel-date" id="briefing-date"></span>
-        </header>
-        <ol class="briefing-list" id="briefing-list"></ol>
       </section>
     </aside>
 
@@ -188,6 +180,14 @@
         </p>
         <a href="#mission" class="text-link" data-modal-trigger="mission" data-i18n="about.cta">Lire le manifeste</a>
       </section>
+
+      <section class="panel briefing-mobile-only">
+        <header class="panel-head">
+          <h2 class="panel-title" data-i18n="briefing.title">Briefing du jour</h2>
+          <span class="panel-date" id="briefing-date"></span>
+        </header>
+        <ol class="briefing-list" id="briefing-list"></ol>
+      </section>
     </aside>
 
   </main>
@@ -218,14 +218,10 @@
         <h2 class="subscribe-title" data-i18n="subscribe.title">Le briefing Wona, chaque matin.</h2>
         <p class="subscribe-body" data-i18n="subscribe.body">Recevez chaque matin une synthèse de l'actualité africaine, contextualisée et classée par perspective.</p>
       </div>
-      <!--
-        Buttondown embed form. Replace REPLACE_WITH_YOUR_BUTTONDOWN_USERNAME below
-        with your real username after signing up at https://buttondown.com/register
-        Free up to 100 subscribers, no API key needed.
-      -->
+    
       <form
         class="subscribe-form"
-        action="https://buttondown.com/api/emails/embed-subscribe/REPLACE_WITH_YOUR_BUTTONDOWN_USERNAME"
+        action="https://buttondown.com/api/emails/embed-subscribe/wonanews"
         method="post"
         target="popupwindow"
       >
@@ -275,7 +271,7 @@
       <div class="footer-col">
         <h3 data-i18n="footer.contact">Contact</h3>
         <ul>
-          <li><a href="mailto:hello@wona.news">hello@wona.news</a></li>
+          <li><a href="mailto:wonanews@proton.me">wonanews@proton.me</a></li>
           <li><a href="#">Twitter</a></li>
           <li><a href="#">LinkedIn</a></li>
         </ul>
