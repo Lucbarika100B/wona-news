@@ -333,6 +333,24 @@
     </div>
   </div>
 
+  <!-- Story modal (opens when user clicks any story card) -->
+  <div class="modal" id="story-modal" aria-hidden="true" role="dialog" aria-labelledby="story-modal-title">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-panel story-modal-panel">
+      <button type="button" class="modal-close" data-close-modal aria-label="Fermer">×</button>
+      <p class="modal-eyebrow story-modal-blindspot" hidden data-i18n="blindspot.tag">Sous-couvert</p>
+      <h2 class="modal-headline story-modal-title" id="story-modal-title"></h2>
+      <p class="story-modal-meta"></p>
+      <p class="modal-body story-modal-summary"></p>
+      <div class="story-modal-orientations"></div>
+      <a href="#" target="_blank" rel="noopener noreferrer" class="modal-cta story-modal-link">
+        <span data-i18n="story.readOriginal">Lire l'article original sur</span>
+        <span class="story-modal-link-source"></span>
+        <span>→</span>
+      </a>
+    </div>
+  </div>
+
   <script src="assets/app.js" defer></script>
 </body>
 </html>

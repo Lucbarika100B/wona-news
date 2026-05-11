@@ -87,6 +87,7 @@
       "story.unclassified": "Non classé",
       "story.sources": "source",
       "story.sourcesPlural": "sources",
+      "story.readOriginal": "Lire l'article original sur",
       "story.loadFailed": "Impossible de charger les histoires. Vérifiez data/articles.json.",
 
       "time.lessThanHour": "il y a < 1h",
@@ -175,6 +176,7 @@
       "story.unclassified": "Unclassified",
       "story.sources": "source",
       "story.sourcesPlural": "sources",
+      "story.readOriginal": "Read the original article on",
       "story.loadFailed": "Failed to load stories. Check data/articles.json.",
 
       "time.lessThanHour": "< 1h ago",
@@ -374,7 +376,6 @@
   // ----------------------------------------------------------------------------
   function renderStoryCard(story, index = 0) {
     const sources = story.sources || [];
-    const primaryUrl = sources[0] && sources[0].url ? sources[0].url : null;
 
     const sourcePills = sources.slice(0, 3).map(src => {
       const inner = `
@@ -382,7 +383,7 @@
         ${escapeHTML(src.name)}
       `;
       return src.url
-        ? `<a href="${escapeHTML(src.url)}" target="_blank" rel="noopener noreferrer" class="source-pill">${inner}</a>`
+        ? `<a href="${escapeHTML(src.url)}" target="_blank" rel="noopener noreferrer" class="source-pill" data-stop-card>${inner}</a>`
         : `<span class="source-pill">${inner}</span>`;
     }).join("");
 
@@ -393,23 +394,15 @@
 
     const sourceLabel = sources.length === 1 ? t("story.sources") : t("story.sourcesPlural");
 
-    const titleEl = primaryUrl
-      ? `<a href="${escapeHTML(primaryUrl)}" target="_blank" rel="noopener noreferrer" class="story-title-link"><h3 class="story-title">${escapeHTML(story.title)}</h3></a>`
-      : `<h3 class="story-title">${escapeHTML(story.title)}</h3>`;
-
-    const mediaLink = primaryUrl
-      ? `<a href="${escapeHTML(primaryUrl)}" target="_blank" rel="noopener noreferrer" class="story-media-link" aria-hidden="true" tabindex="-1">${mediaContent}</a>`
-      : mediaContent;
-
     return `
-      <article class="story-card ${blindspotClass}" style="animation-delay:${index * 60}ms">
-        <div class="story-media">${mediaLink}</div>
+      <article class="story-card ${blindspotClass}" data-story-id="${escapeHTML(story.id)}" style="animation-delay:${index * 60}ms" tabindex="0" role="button" aria-label="${escapeHTML(story.title)}">
+        <div class="story-media">${mediaContent}</div>
         <div class="story-body">
           <div class="story-meta">
             ${sourcePills}
             <span class="source-count">${sources.length} ${sourceLabel} · ${relativeTime(story.published_at)}</span>
           </div>
-          ${titleEl}
+          <h3 class="story-title">${escapeHTML(story.title)}</h3>
           <p class="story-summary">${escapeHTML(story.summary || "")}</p>
           ${renderOrientationBar(story.orientations || {})}
         </div>
@@ -422,7 +415,6 @@
   function renderFeatured(story) {
     if (!story) return "";
     const sources = story.sources || [];
-    const primaryUrl = sources[0] && sources[0].url ? sources[0].url : null;
 
     const sourcePills = sources.slice(0, 4).map(src => {
       const inner = `
@@ -430,7 +422,7 @@
         ${escapeHTML(src.name)}
       `;
       return src.url
-        ? `<a href="${escapeHTML(src.url)}" target="_blank" rel="noopener noreferrer" class="source-pill">${inner}</a>`
+        ? `<a href="${escapeHTML(src.url)}" target="_blank" rel="noopener noreferrer" class="source-pill" data-stop-card>${inner}</a>`
         : `<span class="source-pill">${inner}</span>`;
     }).join("");
 
@@ -439,22 +431,14 @@
       ? `<img src="${escapeHTML(story.image_url)}" alt="" onerror="this.parentElement.innerHTML='<span class=\\'featured-eyebrow\\'>${featuredEyebrow}</span>'+this.dataset.fallback" data-fallback='${renderMediaFallback(story).replace(/'/g, "&apos;")}' />`
       : renderMediaFallback(story);
 
-    const mediaLink = primaryUrl
-      ? `<a href="${escapeHTML(primaryUrl)}" target="_blank" rel="noopener noreferrer" class="story-media-link" aria-hidden="true" tabindex="-1">${mediaContent}</a>`
-      : mediaContent;
-
-    const titleEl = primaryUrl
-      ? `<a href="${escapeHTML(primaryUrl)}" target="_blank" rel="noopener noreferrer" class="story-title-link"><h2 class="featured-title">${escapeHTML(story.title)}</h2></a>`
-      : `<h2 class="featured-title">${escapeHTML(story.title)}</h2>`;
-
     return `
       <div class="featured-media">
         <span class="featured-eyebrow">${featuredEyebrow}</span>
-        ${mediaLink}
+        ${mediaContent}
       </div>
       <div class="featured-body">
         <div class="story-meta" style="margin-bottom:16px">${sourcePills}</div>
-        ${titleEl}
+        <h2 class="featured-title">${escapeHTML(story.title)}</h2>
         <p class="featured-summary">${escapeHTML(story.summary || "")}</p>
         ${renderOrientationBar(story.orientations || {})}
       </div>`;
@@ -633,7 +617,17 @@
 
     const featured = filtered.find(s => !s.blindspot) || filtered[0];
     const featuredEl = document.getElementById("featured-story");
-    if (featuredEl) featuredEl.innerHTML = featured ? renderFeatured(featured) : "";
+    if (featuredEl) {
+      featuredEl.innerHTML = featured ? renderFeatured(featured) : "";
+      if (featured) {
+        featuredEl.dataset.storyId = featured.id;
+        featuredEl.setAttribute("role", "button");
+        featuredEl.setAttribute("tabindex", "0");
+        featuredEl.setAttribute("aria-label", featured.title);
+      } else {
+        delete featuredEl.dataset.storyId;
+      }
+    }
 
     const rest = filtered.filter(s => !featured || s.id !== featured.id);
     const grid = document.getElementById("story-grid");
@@ -734,6 +728,46 @@
     modal.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
   }
+  function openStoryModal(storyId) {
+    const story = STATE.stories.find(s => s.id === storyId);
+    if (!story) return;
+    const modal = document.getElementById("story-modal");
+    if (!modal) return;
+
+    const sources = story.sources || [];
+    const primarySource = sources[0];
+    const sourceLabel = sources.length === 1 ? t("story.sources") : t("story.sourcesPlural");
+
+    // Populate
+    const titleEl = modal.querySelector(".story-modal-title");
+    const metaEl = modal.querySelector(".story-modal-meta");
+    const summaryEl = modal.querySelector(".story-modal-summary");
+    const orientationsEl = modal.querySelector(".story-modal-orientations");
+    const linkEl = modal.querySelector(".story-modal-link");
+    const blindspotBadge = modal.querySelector(".story-modal-blindspot");
+
+    if (titleEl) titleEl.textContent = story.title;
+    if (metaEl) {
+      metaEl.textContent = `${sources.length} ${sourceLabel} · ${relativeTime(story.published_at)}`;
+    }
+    if (summaryEl) summaryEl.textContent = story.summary || "";
+    if (orientationsEl) orientationsEl.innerHTML = renderOrientationBar(story.orientations || {});
+    if (blindspotBadge) blindspotBadge.hidden = !story.blindspot;
+    if (linkEl) {
+      if (primarySource && primarySource.url) {
+        linkEl.href = primarySource.url;
+        linkEl.hidden = false;
+        const labelEl = linkEl.querySelector(".story-modal-link-source");
+        if (labelEl) labelEl.textContent = primarySource.name;
+      } else {
+        linkEl.hidden = true;
+      }
+    }
+
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+  }
   function closeAllModals() {
     document.querySelectorAll(".modal.is-open").forEach(m => {
       m.classList.remove("is-open");
@@ -772,6 +806,20 @@
   // ----------------------------------------------------------------------------
   function wireEvents() {
     document.addEventListener("click", (e) => {
+      // If user clicked something inside a card that explicitly opts out (source pill),
+      // let the default link behavior happen.
+      if (e.target.closest("[data-stop-card]")) {
+        return;
+      }
+
+      // Story card click → open story modal with summary + source link
+      const storyCard = e.target.closest("[data-story-id]");
+      if (storyCard) {
+        e.preventDefault();
+        openStoryModal(storyCard.dataset.storyId);
+        return;
+      }
+
       // Modal trigger (open mission modal etc.) — must run BEFORE anchor handling
       const modalTrigger = e.target.closest("[data-modal-trigger]");
       if (modalTrigger) {
@@ -857,6 +905,14 @@
         closeAllDropdowns();
         closeAllModals();
         closeDrawer();
+      }
+      // Enter or Space on a focused story card → open modal
+      if ((e.key === "Enter" || e.key === " ") && document.activeElement) {
+        const card = document.activeElement.closest("[data-story-id]");
+        if (card) {
+          e.preventDefault();
+          openStoryModal(card.dataset.storyId);
+        }
       }
     });
 
