@@ -445,6 +445,119 @@
   }
 
   // ----------------------------------------------------------------------------
+  // Carousel: auto-rotating featured stories
+  // ----------------------------------------------------------------------------
+  const CAROUSEL_INTERVAL_MS = 4000;
+  const CAROUSEL_STATE = {
+    slides: [],
+    currentIndex: 0,
+    timerId: null,
+    isPaused: false,
+  };
+
+  function paintCarousel(rootEl, slides) {
+    // Stop any prior autoplay before re-rendering
+    stopCarouselAutoplay();
+    CAROUSEL_STATE.slides = slides || [];
+    CAROUSEL_STATE.currentIndex = 0;
+
+    if (slides.length === 0) {
+      rootEl.innerHTML = "";
+      rootEl.classList.remove("carousel");
+      delete rootEl.dataset.storyId;
+      return;
+    }
+
+    rootEl.classList.add("carousel");
+
+    // Build the carousel structure
+    const slideHTML = slides.map((s, i) => `
+      <div class="carousel-slide ${i === 0 ? 'is-active' : ''}" data-slide-index="${i}" data-story-id="${escapeHTML(s.id)}" aria-hidden="${i === 0 ? 'false' : 'true'}">
+        ${renderFeatured(s)}
+      </div>
+    `).join("");
+
+    const dotsHTML = slides.length > 1 ? `
+      <div class="carousel-dots" role="tablist" aria-label="Featured stories navigation">
+        ${slides.map((s, i) => `
+          <button type="button" class="carousel-dot ${i === 0 ? 'is-active' : ''}" data-carousel-goto="${i}" role="tab" aria-label="Slide ${i + 1} of ${slides.length}: ${escapeHTML(s.title)}" aria-selected="${i === 0 ? 'true' : 'false'}"></button>
+        `).join("")}
+      </div>
+    ` : "";
+
+    const arrowsHTML = slides.length > 1 ? `
+      <button type="button" class="carousel-arrow carousel-arrow-prev" data-carousel-prev aria-label="Previous slide">‹</button>
+      <button type="button" class="carousel-arrow carousel-arrow-next" data-carousel-next aria-label="Next slide">›</button>
+    ` : "";
+
+    rootEl.innerHTML = `
+      <div class="carousel-track" aria-live="polite">${slideHTML}</div>
+      ${arrowsHTML}
+      ${dotsHTML}
+    `;
+
+    // Set first slide's storyId on root for the existing card-click handler
+    rootEl.dataset.storyId = slides[0].id;
+    rootEl.setAttribute("role", "region");
+    rootEl.setAttribute("aria-label", "Featured stories carousel");
+
+    // Honor reduced-motion preference: no autoplay
+    const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!prefersReduced && slides.length > 1) {
+      startCarouselAutoplay();
+    }
+  }
+
+  function goToCarouselSlide(index) {
+    const slides = CAROUSEL_STATE.slides;
+    if (slides.length === 0) return;
+    const next = ((index % slides.length) + slides.length) % slides.length;
+    CAROUSEL_STATE.currentIndex = next;
+
+    const rootEl = document.getElementById("featured-story");
+    if (!rootEl) return;
+
+    // Update slides
+    rootEl.querySelectorAll(".carousel-slide").forEach((slideEl, i) => {
+      const isActive = i === next;
+      slideEl.classList.toggle("is-active", isActive);
+      slideEl.setAttribute("aria-hidden", isActive ? "false" : "true");
+    });
+
+    // Update dots
+    rootEl.querySelectorAll(".carousel-dot").forEach((dot, i) => {
+      const isActive = i === next;
+      dot.classList.toggle("is-active", isActive);
+      dot.setAttribute("aria-selected", isActive ? "true" : "false");
+    });
+
+    // Sync the root's data-story-id so the global click handler opens the correct story
+    rootEl.dataset.storyId = slides[next].id;
+    rootEl.setAttribute("aria-label", slides[next].title);
+  }
+
+  function nextCarouselSlide() {
+    goToCarouselSlide(CAROUSEL_STATE.currentIndex + 1);
+  }
+  function prevCarouselSlide() {
+    goToCarouselSlide(CAROUSEL_STATE.currentIndex - 1);
+  }
+
+  function startCarouselAutoplay() {
+    stopCarouselAutoplay();
+    if (CAROUSEL_STATE.isPaused) return;
+    CAROUSEL_STATE.timerId = setInterval(() => {
+      if (!CAROUSEL_STATE.isPaused) nextCarouselSlide();
+    }, CAROUSEL_INTERVAL_MS);
+  }
+  function stopCarouselAutoplay() {
+    if (CAROUSEL_STATE.timerId) {
+      clearInterval(CAROUSEL_STATE.timerId);
+      CAROUSEL_STATE.timerId = null;
+    }
+  }
+
+  // ----------------------------------------------------------------------------
   // Rendering: briefing list
   // ----------------------------------------------------------------------------
   function renderBriefing(stories) {
@@ -615,21 +728,17 @@
   function paint() {
     const filtered = getFilteredStories();
 
-    const featured = filtered.find(s => !s.blindspot) || filtered[0];
+    // Carousel: pick top N non-blindspot stories as featured slides
+    const featuredCandidates = filtered.filter(s => !s.blindspot).slice(0, 5);
+    const featuredSlides = featuredCandidates.length > 0 ? featuredCandidates : filtered.slice(0, 5);
     const featuredEl = document.getElementById("featured-story");
     if (featuredEl) {
-      featuredEl.innerHTML = featured ? renderFeatured(featured) : "";
-      if (featured) {
-        featuredEl.dataset.storyId = featured.id;
-        featuredEl.setAttribute("role", "button");
-        featuredEl.setAttribute("tabindex", "0");
-        featuredEl.setAttribute("aria-label", featured.title);
-      } else {
-        delete featuredEl.dataset.storyId;
-      }
+      paintCarousel(featuredEl, featuredSlides);
     }
 
-    const rest = filtered.filter(s => !featured || s.id !== featured.id);
+    // Stories grid: everything not in the carousel
+    const featuredIds = new Set(featuredSlides.map(s => s.id));
+    const rest = filtered.filter(s => !featuredIds.has(s.id));
     const grid = document.getElementById("story-grid");
     if (grid) grid.innerHTML = rest.map((s, i) => renderStoryCard(s, i)).join("");
 
@@ -812,6 +921,32 @@
         return;
       }
 
+      // Carousel navigation: prev / next / dot — must fire BEFORE story-card handler
+      // since these controls live inside an element that has data-story-id.
+      const dotBtn = e.target.closest("[data-carousel-goto]");
+      if (dotBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        goToCarouselSlide(parseInt(dotBtn.dataset.carouselGoto, 10));
+        // Restart timer from this slide
+        startCarouselAutoplay();
+        return;
+      }
+      if (e.target.closest("[data-carousel-prev]")) {
+        e.preventDefault();
+        e.stopPropagation();
+        prevCarouselSlide();
+        startCarouselAutoplay();
+        return;
+      }
+      if (e.target.closest("[data-carousel-next]")) {
+        e.preventDefault();
+        e.stopPropagation();
+        nextCarouselSlide();
+        startCarouselAutoplay();
+        return;
+      }
+
       // Story card click → open story modal with summary + source link
       const storyCard = e.target.closest("[data-story-id]");
       if (storyCard) {
@@ -927,6 +1062,28 @@
         }, 180);
       });
     }
+
+    // Carousel: pause autoplay on hover, resume on leave
+    document.addEventListener("mouseenter", (e) => {
+      if (e.target && e.target.closest && e.target.closest("#featured-story")) {
+        CAROUSEL_STATE.isPaused = true;
+      }
+    }, true);
+    document.addEventListener("mouseleave", (e) => {
+      if (e.target && e.target.closest && e.target.closest("#featured-story")) {
+        CAROUSEL_STATE.isPaused = false;
+      }
+    }, true);
+
+    // Carousel: pause autoplay when tab is hidden, resume on focus
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        stopCarouselAutoplay();
+      } else if (CAROUSEL_STATE.slides.length > 1) {
+        const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (!prefersReduced) startCarouselAutoplay();
+      }
+    });
   }
 
   // ----------------------------------------------------------------------------
