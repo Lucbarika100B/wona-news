@@ -832,6 +832,12 @@ body {
   margin-bottom: 36px;
   max-height: 360px;
 }
+/* When featured is a carousel, the carousel-track takes over the layout.
+   Reset the outer grid so it doesn't constrain the track to a single column. */
+.featured.carousel {
+  display: block;
+  max-height: 360px;
+}
 @media (max-width: 950px) {
   .featured { max-height: none; grid-template-columns: 1fr; }
 }
@@ -2001,6 +2007,7 @@ a.source-pill:hover {
 .carousel-track {
   position: relative;
   display: grid;
+  width: 100%;
 }
 .carousel-slide {
   grid-column: 1;
