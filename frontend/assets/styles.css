@@ -869,7 +869,7 @@ body {
   backdrop-filter: blur(4px);
 }
 .featured-body {
-  padding: 22px 26px 22px;
+  padding: 22px 26px 28px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -1116,14 +1116,14 @@ a.source-pill:hover {
 .orientation-bar-segment:hover { opacity: 0.85; }
 .orientation-labels {
   display: flex;
-  justify-content: space-between;
-  margin-top: 8px;
-  font-size: 11px;
+  justify-content: flex-start;
+  margin-top: 10px;
+  font-size: 10.5px;
   font-family: var(--font-mono);
   color: var(--ink-soft);
   letter-spacing: 0.02em;
   flex-wrap: wrap;
-  gap: 6px 12px;
+  gap: 4px 14px;
 }
 .orientation-label {
   display: inline-flex;
@@ -2068,17 +2068,16 @@ a.source-pill:hover {
 .carousel-arrow-prev { left: 12px; }
 .carousel-arrow-next { right: 12px; }
 
-/* Carousel dots: bottom-center */
+/* Carousel dots: bottom-left (positioned under the image column, not over body text) */
 .carousel-dots {
   position: absolute;
-  bottom: 12px;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 14px;
+  left: 24px;
   display: flex;
   gap: 8px;
   z-index: 5;
   padding: 6px 10px;
-  background: rgba(14, 31, 56, 0.45);
+  background: rgba(14, 31, 56, 0.55);
   border-radius: 999px;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
