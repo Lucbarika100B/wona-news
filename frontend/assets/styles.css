@@ -823,7 +823,7 @@ body {
    ========================================================================= */
 .featured {
   display: grid;
-  grid-template-columns: 1.25fr 1fr;
+  grid-template-columns: 0.85fr 1.4fr;
   gap: 0;
   background: var(--sand-50);
   border: 1px solid var(--sand-300);
@@ -884,12 +884,12 @@ body {
   overflow: hidden;
 }
 .featured-summary {
-  font-size: 14px;
-  line-height: 1.55;
+  font-size: 15px;
+  line-height: 1.6;
   color: var(--ink-muted);
   margin: 0 0 14px;
   display: -webkit-box;
-  -webkit-line-clamp: 5;
+  -webkit-line-clamp: 7;
   -webkit-box-orient: vertical;
   overflow: hidden;
   flex: 1;
@@ -2010,7 +2010,7 @@ a.source-pill:hover {
   transition: opacity 0.5s ease;
   pointer-events: none;
   display: grid;
-  grid-template-columns: 1.25fr 1fr;
+  grid-template-columns: 0.85fr 1.4fr;
 }
 .carousel-slide.is-active {
   opacity: 1;
